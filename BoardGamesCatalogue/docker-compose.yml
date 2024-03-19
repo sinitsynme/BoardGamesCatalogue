@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  postgres-board-games:
+    container_name: postgres-board-games
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "board_games"
+      POSTGRES_USER: "nastolki"
+      POSTGRES_PASSWORD: "nastolki"
+    ports:
+      - "5453:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d board_games -U nastolki" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
