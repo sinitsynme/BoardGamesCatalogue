@@ -24,10 +24,26 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
+
 var app = builder.Build();
 
-if (args.Length == 1 && args[0].ToLower() == "seeddata")
-    SeedData(app);
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+context.Database.Migrate();
+
+SeedData(app);
 
 void SeedData(IHost app)
 {
@@ -37,6 +53,7 @@ void SeedData(IHost app)
     {
         var service = scope.ServiceProvider.GetService<Seed>();
         service.SeedDataContext();
+        Console.Write("Seed completed");
     }
 }
 
@@ -46,7 +63,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.UseCors("AllowOrigin");
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

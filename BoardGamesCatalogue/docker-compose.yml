@@ -14,3 +14,20 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+    networks: 
+      - internal
+  dotnet-board-games:
+    container_name: dotnet-board-games
+    build: 
+      context: .
+    ports:
+      - "8888:8080"
+      - "8889:8081"
+    depends_on: 
+      postgres-board-games:
+        condition: service_healthy
+    networks:
+      - internal
+
+networks:
+  internal:

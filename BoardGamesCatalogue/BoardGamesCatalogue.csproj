@@ -27,4 +27,9 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Frontend\logos\" />
+      <Folder Include="Frontend\Nastolki\" />
+    </ItemGroup>
+
 </Project>
